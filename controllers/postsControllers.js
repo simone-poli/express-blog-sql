@@ -1,0 +1,111 @@
+const posts = require("../data/posts")
+const connection = require("../db/connection")
+
+
+function index (req, res){
+  let filteredpost = posts;
+
+  if(req.query.tags){
+    filteredpost = posts.filter(post => post.tags.includes(req.query.tags)
+);
+  }
+  console.log(filteredpost)
+  res.json(filteredpost)
+}
+
+function show (req, res){
+  const id = Number(req.params.id)
+  const post = posts.find(posts => posts.id === id);
+  if(!post){
+    res.status(404)
+    return res.json({
+      error:"Not found",
+      message:"Post non trovato"
+
+    })
+  }
+  res.json(post)
+}
+
+function store (req, res){
+    const newPost = {
+        title :req.body.title,
+        content: req.body.content,
+        image: req.body.image,
+        tags: req.body.tags
+    }
+
+    posts.push(newPost)
+
+    console.log(posts)
+
+    res.status(201)
+    res.json(newPost)
+}
+
+function update (req,res){
+    const id = Number(req.params.id)
+
+    const post = posts.find(post => post.id === id)
+
+    if(!post){
+        res.status(404)
+        return res.json({
+            message: "post not found"
+        })
+    }
+
+    post.title = req.body.title;
+    post.content = req.body.content;
+    post.image = req.body.image;
+    post.tags = req.body.tags;
+
+    console.log(posts)
+
+    res.json(post)
+}
+
+function modify (req,res){
+    const id = Number(req.params.id)
+
+    const post = posts.find(post => post.id === id)
+
+    if(!post){
+        res.status(404)
+        return res.json({
+            message: "post not found"
+        })
+    }
+
+    post.title = req.body.title;
+    post.content = req.body.content;
+    post.image = req.body.image;
+    post.tags = req.body.tags;
+
+    console.log(posts)
+
+    res.json(post)
+}
+
+function destroy (req, res){
+  const id = Number(req.params.id)
+  const post = posts.find(posts => posts.id === id);
+  if(!post){
+    res.status(404)
+
+    return res.json({
+      
+      message:"Post non trovato"
+
+    })
+  }
+  posts.splice(posts.indexOf(post),1)
+
+  console.log(posts)
+
+  res.sendStatus(204)
+  
+}
+
+
+module.exports = {index, show, store, update, modify, destroy}
