@@ -18,16 +18,21 @@ function index (req, res){
 
 function show (req, res){
   const id = Number(req.params.id)
-  const post = posts.find(posts => posts.id === id);
-  if(!post){
-    res.status(404)
-    return res.json({
-      error:"Not found",
-      message:"Post non trovato"
+  const sql ="SELECT * FROM posts WHERE id =?;"
 
+  connection.query(sql, [id], (err,results) =>{
+    if(err)
+      return res.status(500).json({
+      err: true,
+      message:err.message
     })
-  }
-  res.json(post)
+    if(results.length === 0) return res.status(404).json({
+      err: true,
+      message: "Not found"
+    })
+    console.log(results),
+    res.json(results)
+  })
 }
 
 function store (req, res){
