@@ -3,14 +3,17 @@ const connection = require("../db/connection")
 
 
 function index (req, res){
-  let filteredpost = posts;
+  const sql = "SELECT * FROM posts"
 
-  if(req.query.tags){
-    filteredpost = posts.filter(post => post.tags.includes(req.query.tags)
-);
-  }
-  console.log(filteredpost)
-  res.json(filteredpost)
+  connection.query(sql, (err,results) =>{
+    if(err)
+      return res.status(500).json({
+    err: true,
+    message : "Not found"
+  })
+  console.log(results)
+  res.json(results)
+  })
 }
 
 function show (req, res){
