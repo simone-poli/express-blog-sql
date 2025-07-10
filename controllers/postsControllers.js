@@ -97,21 +97,18 @@ function modify (req,res){
 
 function destroy (req, res){
   const id = Number(req.params.id)
-  const post = posts.find(posts => posts.id === id);
-  if(!post){
-    res.status(404)
+  const sql = "DELETE FROM posts WHERE id = ?"
 
-    return res.json({
+  connection.query(sql, [id], (err,results) =>{
+    if(err)
+      return res.status(500).json({
+        err: true,
+        message: err.message
+      })
       
-      message:"Post non trovato"
-
-    })
-  }
-  posts.splice(posts.indexOf(post),1)
-
-  console.log(posts)
-
-  res.sendStatus(204)
+      console.log(results)
+      res.sendStatus(204)
+  })
   
 }
 
